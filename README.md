@@ -92,23 +92,13 @@ should not be committed. The soccer ball is created with Isaac Lab native
 ### 4. Prepare Motions and Checkpoints
 
 Training requires one retargeted kick motion in RoboNaldo NPZ format. This
-repository includes the open-source right-foot kick reference CSV used by the
-Stage-2 hot-test checkpoint:
+repository includes the open-source right-foot kick reference CSV retargeted by GVHMR+GMR:
 
 ```text
 motions/right_kick_reference.csv
 ```
 
-The CSV has 612 frames at 50 Hz. Each row follows the `csv_to_npz.py` input
-layout: root position, root quaternion in `xyzw`, then 29 Unitree G1 joint
-positions.
-
-| Item | How it is used |
-| --- | --- |
-| Reference CSV | committed at `motions/right_kick_reference.csv` |
-| Converted motion NPZ | local file under `motions/` or WandB registry artifact |
-| Saved task preset | archived as expanded `params/task_params.yaml` in each run |
-| Checkpoint | local `model_*.pt` or WandB run path via `--wandb_path` |
+Of course you can replace it with yours.
 
 Convert the included reference CSV into NPZ:
 
@@ -131,7 +121,17 @@ python scripts/upload_npz.py \
 
 ## Training
 
-Use `scripts/rsl_rl/train.py` directly:
+RoboNaldo uses a staged curriculum. Continue each stage from the previous stage checkpoint.
+
+| Stage | Purpose | Right-foot preset |
+| --- | --- | --- |
+| Stage 1a | Plane motion-tracking prior, no task reward | `right_kick/tracking_params.yaml` |
+| Stage 1b, optional | Mixed-terrain tracking robustness fine-tune | `right_kick/tracking_mixed_params.yaml` |
+| Stage 2a | Small-range static-ball adaptation | `right_kick/task_params_1.yaml` |
+| Stage 2b | Wider stationary-ball shooting | `right_kick/task_params_2.yaml` |
+| Stage 3 | Dynamic incoming-ball shooting with jump trigger/adaptive sampling | `right_kick/task_params_3.yaml` |
+
+For training, use `scripts/rsl_rl/train.py` directly:
 
 ```bash
 python scripts/rsl_rl/train.py \
@@ -144,49 +144,28 @@ python scripts/rsl_rl/train.py \
   --run_name right_kick_tracking
 ```
 
-Use `--registry_name <entity>/wandb-registry-motions/right_kick:latest` instead
-of `--motion_file` if you keep motions in a W&B artifact registry.
+For different stages, change the `--yaml` argument value to switch among different stage presets.
 
-RoboNaldo uses a staged curriculum. Continue each stage from the previous
-stage checkpoint. Train the tracking prior on a plane first; after it tracks
-reliably, optionally fine-tune that checkpoint with the mixed-terrain tracking
-preset for robustness. A scratch mixed-terrain smoke run is a harsher problem
-and is not the recommended first stage.
-
-| Paper stage | Purpose | Right-foot preset |
-| --- | --- | --- |
-| Stage 1a | Plane motion-tracking prior, no task reward | `right_kick/tracking_params.yaml` |
-| Stage 1b, optional | Mixed-terrain tracking robustness fine-tune | `right_kick/tracking_mixed_params.yaml` |
-| Stage 2a | Small-range static-ball adaptation | `right_kick/task_params_1.yaml` |
-| Stage 2b | Wider stationary-ball shooting | `right_kick/task_params_2.yaml` |
-| Stage 3 | Dynamic incoming-ball shooting with jump trigger/adaptive sampling | `right_kick/task_params_3.yaml` |
-
-Use a small policy noise std for Stage 2 and Stage 3 resume runs, so the task policy does not destroy the learned kick prior
-with excessive exploration.
-
-This release ships right-foot presets and the right-foot reference motion. A
-left-foot curriculum should use mirrored motion data and change
-`main_foot_name` to `left_ankle_roll_link`.
-
-Mixed-terrain fine-tune from a local plane-tracking checkpoint:
+Resume training:
 
 ```bash
 python scripts/rsl_rl/train.py \
   --task Tracking-Body-Frame-Flat-G1-v0 \
   --motion_file motions/right_kick.npz \
-  --yaml right_kick/tracking_mixed_params.yaml \
+  --yaml <yaml_file> \
   --resume True \
   --load_run <plane_tracking_run_folder> \
   --checkpoint model_<iter>.pt \
   --headless
 ```
 
-`--wandb_path` accepts either a W&B UI URL or an
-`entity/project/run_id` path, and loads the latest `model_*.pt` unless
-`--checkpoint` names a specific checkpoint.
 
-Use `Tracking-Body-Frame-Flat-G1-v0` for the paper-style body-frame observation
-setup. `Tracking-Flat-G1-v0` remains registered for world-frame experiments.
+>It is recommended to use a small policy noise std for Stage 2 and Stage 3 resume runs, so the task policy does not destroy the learned kick prior with excessive exploration.
+
+> This release ships right-foot presets and the right-foot reference motion. A left-foot curriculum should use mirrored motion data and change `main_foot_name` to `left_ankle_roll_link`.
+
+Use `Tracking-Body-Frame-Flat-G1-v0` registry for the paper-style body-frame observation
+setup and `Tracking-Flat-G1-v0` for external-mocap-style global observation setup.
 
 ## Play and Evaluation
 
@@ -208,20 +187,9 @@ Use `scripts/rsl_rl/eval.py` for evaluation:
 python scripts/rsl_rl/eval.py \
   --task Tracking-Body-Frame-Flat-G1-v0 \
   --wandb_path <your_checkpoint_path> \
-  --yaml right_kick/task_params_2.yaml \
+  --yaml <your_yaml_file> \
   --motion_file motions/right_kick.npz \
   --num_envs 6000 \
-  --headless
-```
-
-Resume training from the hot-test run with `scripts/rsl_rl/train.py`:
-
-```bash
-python scripts/rsl_rl/train.py \
-  --task Tracking-Body-Frame-Flat-G1-v0 \
-  --wandb_path <your_checkpoint_path> \
-  --motion_file motions/right_kick.npz \
-  --yaml right_kick/task_params_2.yaml \
   --headless
 ```
 
@@ -241,10 +209,7 @@ observation/action layout, and motion anchor settings) for
 | `play.py` playback | `<checkpoint_folder>/exported/policy-obs.onnx` |
 
 Run `play.py` once on the checkpoint you plan to deploy (same `--task`, `--yaml`,
-and `--motion_file` as training) to generate the ONNX artifact. Use the Stage-2
-or Stage-3 task preset for shooting policies. Keep checkpoint paths and run IDs
-generic in public docs; deployment should consume the exported ONNX artifact
-rather than relying on a private checkpoint reference.
+and `--motion_file` as training) to generate the ONNX artifact.
 
 ## Documentation
 
