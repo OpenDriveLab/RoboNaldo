@@ -1,0 +1,97 @@
+# ==============================================================================
+#  BeyondMimic - Tracking Environment Hyperparameters
+#  Edit this file to tune reward weights, init ranges, and sim settings.
+# ==============================================================================
+
+# ---------------------------------------------------------------------------
+# Reward group weights
+# ---------------------------------------------------------------------------
+stage: tracking
+motion_weight: 1.0        # Overall scale for motion-imitation rewards
+goal_weight: 0.0            # Overall scale for task-goal rewards (ball kick)
+reg_weight: 0.05             # Overall scale for regularization penalties
+goal_reward_burst_steps: 4
+goal_reset_delay_steps: 50
+shot_success_threshold: 0.5
+
+# ---------------------------------------------------------------------------
+# Episode initialization ranges (applied at every env reset)
+# ---------------------------------------------------------------------------
+init_pos_range: 0.1         # Half-width [m] of uniform ball XY spawn range
+init_vel_range: 0.0         # Half-speed [m/s] of uniform ball linear velocity spawn
+init_pos_z_bound: 0.0       # Upper bound [m] for ball Z spawn offset (lower = 0)
+init_vel_z_range: 0.0       # Half-speed [m/s] of ball Z velocity spawn (0 = static)
+init_yaw_range: 0.2         # Half-angle [rad] of robot yaw perturbation at reset
+static_ball_probability: 0.05
+stand_still_env_ratio: 0.0
+lidar_stale_probability: 0.0
+shot_valid_steps: 500
+start_time_sampling_fraction: 1.0
+
+ball_init_state_pos: [0.25,1.0,0.12] # [x, y, z]
+ball_init_state_vel: [0.0, 0.0, 0.0] # [x, y, z]
+std_difficulty_multiplier: 1.0
+                             # Divides the std of Gaussian reward kernels; larger
+                             # value -> narrower reward peak -> harder task
+
+# ---------------------------------------------------------------------------
+# Simulation / physics
+# ---------------------------------------------------------------------------
+rigid_num: 20                # GPU rigid-body count exponent:
+                             #   gpu_max_rigid_patch_count = 10 * 2^rigid_num
+use_rough_terrain: false
+
+# ---------------------------------------------------------------------------
+# Robot / task identity
+# ---------------------------------------------------------------------------
+main_foot_name: "right_ankle_roll_link"
+                             # Link used for ball-contact detection and kick reward.
+                             # Change to "left_ankle_roll_link" for left-foot policy.
+
+# ---------------------------------------------------------------------------
+# Domain randomization - velocity push range (world frame)
+# ---------------------------------------------------------------------------
+velocity_range:
+  x:     [-0.5,  0.5]       # [m/s]  forward / backward push
+  y:     [-0.5,  0.5]       # [m/s]  lateral push
+  z:     [-0.2,  0.2]       # [m/s]  vertical push
+  roll:  [-0.52, 0.52]      # [rad/s] roll angular velocity perturbation
+  pitch: [-0.52, 0.52]      # [rad/s] pitch angular velocity perturbation
+  yaw:   [-0.78, 0.78]      # [rad/s] yaw angular velocity perturbation
+
+# ---------------------------------------------------------------------------
+# Adapted motion and jump trigger
+# adapt_motion_flag: rotate the anchor command toward the ball and move its position toward the ball.
+# jump_flag: start near the critic frame when the ball is close to the robot
+# with less than threshold_r meters in threshold_t seconds;
+# ---------------------------------------------------------------------------
+critic_frame_index: 250
+adapt_motion_flag: false
+jump_flag: false
+use_ontime_ball_reset: false
+critical_frame_adaptive_sampling: true
+critical_frame_sampling_window: 10
+anchor_xy_offset: [0.0, 0.0]
+threshold_r: 0.2
+threshold_t: 0.4
+lambda_factor: 0.5
+
+reward_overrides:
+  motion:
+    motion_global_anchor_pos:
+      weight_scale: 0.5
+    motion_global_anchor_ori:
+      weight_scale: 0.5
+  regularization:
+    action_rate_l2:
+      weight: -0.1
+termination_overrides:
+  anchor_pos:
+    threshold: 0.25
+  ee_body_pos:
+    threshold:
+      left_ankle_roll_link: 0.25
+      right_ankle_roll_link: 0.25
+      left_wrist_yaw_link: 0.25
+      right_wrist_yaw_link: 0.25
+  self_collision: false

@@ -1,0 +1,3 @@
+[submodule "RoboNaldo_Deploy"]
+	path = RoboNaldo_Deploy
+	url = https://github.com/OpenDriveLab/RoboNaldo_Deploy.git
