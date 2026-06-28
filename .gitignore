@@ -1,0 +1,60 @@
+# Omniverse
+**/*.dmp
+**/.thumbs
+
+# Python
+.DS_Store
+**/*.egg-info/
+**/__pycache__/
+**/.pytest_cache/
+**/*.pyc
+**/*.pb
+
+# IDE
+**/.idea/
+**/.vscode/
+.cursor/
+# Don't ignore the top-level .vscode directory as it is
+# used to configure VS Code settings
+!.vscode
+*.log
+
+# Outputs
+**/runs/*
+**/logs/*
+**/recordings/*
+**/output/*
+**/outputs/*
+**/videos/*
+**/wandb/*
+**/.neptune/*
+docker/artifacts/
+*.tmp
+*.pch
+
+# Local development log
+CHANGELOG_zh.md
+changelog_zh.md
+
+# Isaac-Sim packman
+_isaac_sim*
+_repo
+_build
+.lastformat
+
+*.csv
+*.pkl
+*.zarr
+*.npz
+!motions/
+!motions/right_kick_reference.csv
+
+**/assets/
+!/assets/
+!/assets/teaser-crop.png
+artifacts/
+
+# Misc
+motion_third_party/
+logs/
+figs/

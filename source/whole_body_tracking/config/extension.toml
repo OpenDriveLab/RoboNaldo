@@ -1,0 +1,27 @@
+[package]
+
+# Semantic Versioning is used: https://semver.org/
+version = "0.1.0"
+
+# Description
+category = "isaaclab"
+readme  = "README.md"
+
+title = "RoboNaldo Training"
+author = "RoboNaldo Authors"
+maintainer = "RoboNaldo Authors"
+description="Isaac Lab training environments for humanoid football kicking"
+repository = ""
+keywords = ["isaaclab", "humanoid", "football", "motion-tracking"]
+
+[dependencies]
+"isaaclab" = {}
+"isaaclab_assets" = {}
+"isaaclab_mimic" = {}
+"isaaclab_rl" = {}
+"isaaclab_tasks" = {}
+
+[[python.module]]
+name = "whole_body_tracking"
+
+[isaaclab_settings]

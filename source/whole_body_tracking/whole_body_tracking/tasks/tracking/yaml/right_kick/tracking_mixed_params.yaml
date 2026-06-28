@@ -1,0 +1,33 @@
+# ==============================================================================
+#  RoboNaldo - Mixed-Terrain Tracking Fine-Tune
+#  Start from a plane-trained tracking checkpoint before using this preset.
+# ==============================================================================
+
+inherits: right_kick/tracking_params.yaml
+
+# Keep the first tracking stage on a plane. This preset adds light terrain
+# variation only after the kick prior is already stable.
+use_rough_terrain: true
+mixed_terrain:
+  terrain_bank_rows: 4
+  terrain_bank_cols: 8
+  max_init_terrain_level: 0
+  horizontal_scale: 0.1
+  vertical_scale: 0.005
+  slope_threshold: 0.75
+  random_rough:
+    proportion: 0.8
+    noise_range: [0.0, 0.008]
+    noise_step: 0.005
+    downsampled_scale: 0.2
+    border_width: 0.25
+  slope:
+    proportion: 0.1
+    slope_range: [0.0, 0.005]
+    platform_width: 0.25
+    border_width: 0.25
+  inverted_slope:
+    proportion: 0.1
+    slope_range: [0.0, 0.005]
+    platform_width: 0.25
+    border_width: 0.25
