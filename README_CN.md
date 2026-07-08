@@ -59,7 +59,7 @@ RoboNaldo 在 Isaac Lab 中训练 Unitree G1 足球射门策略。
 ```bash
 git clone https://github.com/HybridRobotics/whole_body_tracking.git
 cd whole_body_tracking
-python -m pip install -e .
+python -m pip install -e source/whole_body_tracking
 cd ..
 python -m pip install -e source/whole_body_tracking
 ```

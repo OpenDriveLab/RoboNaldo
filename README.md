@@ -61,7 +61,7 @@ and the RoboNaldo extension in the same Isaac Lab Python environment:
 ```bash
 git clone https://github.com/HybridRobotics/whole_body_tracking.git
 cd whole_body_tracking
-python -m pip install -e .
+python -m pip install -e source/whole_body_tracking
 cd ..
 python -m pip install -e source/whole_body_tracking
 ```
