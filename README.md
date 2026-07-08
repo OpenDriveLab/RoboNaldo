@@ -76,7 +76,6 @@ mkdir -p source/whole_body_tracking/whole_body_tracking/assets
 curl -L -o unitree_description.tar.gz https://storage.googleapis.com/qiayuanl_robot_descriptions/unitree_description.tar.gz
 tar -xzf unitree_description.tar.gz -C source/whole_body_tracking/whole_body_tracking/assets/
 rm unitree_description.tar.gz
-# testing
 test -f source/whole_body_tracking/whole_body_tracking/assets/unitree_description/urdf/g1/main.urdf
 ```
 
