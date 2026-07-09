@@ -48,28 +48,42 @@ Recommended baseline:
 
 | Dependency | Version |
 | --- | --- |
-| Isaac Sim | 4.5.0 |
-| Isaac Lab | 2.1.0 |
-| Python | 3.10 |
+| Isaac Sim | 5.1.0 |
+| Isaac Lab | 2.3.2 |
+| Python | 3.11 |
 
-### 2. Install BeyondMimic
+### 2. Install the Training Extension
 
-Install both the upstream
-[BeyondMimic repository](https://github.com/HybridRobotics/whole_body_tracking)
-and the RoboNaldo extension in the same Isaac Lab Python environment:
+Activate a clean Isaac Lab Python environment, then install this repository's
+training extension:
 
 ```bash
-git clone https://github.com/HybridRobotics/whole_body_tracking.git
-cd whole_body_tracking
-python -m pip install -e source/whole_body_tracking
-cd ..
 python -m pip install -e source/whole_body_tracking
 ```
+
+This repository already contains the modified BeyondMimic-style Isaac Lab
+extension needed for RoboNaldo, so you do not need to clone or install the
+upstream BeyondMimic repository separately. The Python package name is
+`whole_body_tracking`; if another editable extension with the same package name
+was previously installed in this environment, reinstall the command above and
+verify the active package path with:
+
+```bash
+python - <<'PY'
+import importlib.util
+
+spec = importlib.util.find_spec("whole_body_tracking")
+print(spec.origin)
+PY
+```
+
+The printed path should point to this repository, for example:
+`.../RoboNaldo/source/whole_body_tracking/whole_body_tracking/__init__.py`.
 
 ### 3. Download Robot Assets
 
 The Unitree G1 description is not committed to this repository. Download it
-before creating the environment from the same asset source used by BeyondMimic:
+before running the environments:
 
 ```bash
 mkdir -p source/whole_body_tracking/whole_body_tracking/assets

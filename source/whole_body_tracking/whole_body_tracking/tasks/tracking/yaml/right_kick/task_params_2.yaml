@@ -8,8 +8,8 @@
 # ---------------------------------------------------------------------------
 stage: task
 motion_weight: 1.0          # Overall scale for motion-imitation rewards
-goal_weight: 1.0           # Overall scale for task-goal rewards (ball kick)
-reg_weight: 0.1             # Overall scale for regularization penalties
+goal_weight: 0.8           # Overall scale for task-goal rewards (ball kick)
+reg_weight: 0.2             # Overall scale for regularization penalties
 goal_reward_burst_steps: 10
 goal_reset_delay_steps: 300
 shot_success_threshold: 0.5
@@ -128,7 +128,7 @@ reward_overrides:
         warmup_threshold: 0.7
   goal:
     goal_reward_burst:
-      weight: 500.0
+      weight: 0.0
     cmd_global_com_pos:
       weight_scale: 0.0
       params:

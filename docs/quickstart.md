@@ -5,14 +5,31 @@ all commands from the repository root unless noted otherwise.
 
 ## Environment
 
-Install Isaac Sim 4.5.0 and Isaac Lab 2.1.0, then activate the Python
+Install Isaac Sim 5.1.0 and Isaac Lab 2.3.2, then activate the Python 3.11
 environment that can import `isaaclab`, `isaaclab_tasks`, and `isaaclab_rl`.
 
-Install the RoboNaldo training extension:
+Install this repository's training extension in a clean Isaac Lab environment:
 
 ```bash
 python -m pip install -e source/whole_body_tracking
 ```
+
+This repository already contains the modified BeyondMimic-style Isaac Lab
+extension needed for RoboNaldo. You do not need to clone or install upstream
+BeyondMimic separately. The package name is `whole_body_tracking`; verify the
+active import path after installation:
+
+```bash
+python - <<'PY'
+import importlib.util
+
+spec = importlib.util.find_spec("whole_body_tracking")
+print(spec.origin)
+PY
+```
+
+The path should point to this repository's `source/whole_body_tracking`
+directory.
 
 ## Robot Assets
 

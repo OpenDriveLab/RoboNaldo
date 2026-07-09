@@ -10,8 +10,9 @@ import isaaclab.utils.math as math_utils
 from isaaclab.assets import Articulation
 from isaaclab.managers import CommandTerm, CommandTermCfg
 from isaaclab.markers import VisualizationMarkers, VisualizationMarkersCfg
-from isaaclab.markers.config import FRAME_MARKER_CFG, CUBOID_MARKER_CFG, SPHERE_MARKER_CFG, RED_ARROW_X_MARKER_CFG
+from isaaclab.markers.config import FRAME_MARKER_CFG
 from isaaclab.utils import configclass
+from isaaclab.utils.assets import ISAAC_NUCLEUS_DIR
 from isaaclab.utils.math import (
     subtract_frame_transforms,
     quat_apply,
@@ -34,6 +35,38 @@ from whole_body_tracking.tasks.tracking.mdp.trajectory import (
 )
 if TYPE_CHECKING:
     from isaaclab.envs import ManagerBasedRLEnv
+
+
+def _cuboid_marker_cfg(
+    prim_path: str,
+    size: tuple[float, float, float],
+    color: tuple[float, float, float, float],
+) -> VisualizationMarkersCfg:
+    return VisualizationMarkersCfg(
+        prim_path=prim_path,
+        markers={
+            "cuboid": sim_utils.CuboidCfg(
+                size=size,
+                visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=color),
+            ),
+        },
+    )
+
+
+def _arrow_x_marker_cfg(
+    prim_path: str,
+    color: tuple[float, float, float] = (1.0, 0.4, 0.8),
+) -> VisualizationMarkersCfg:
+    return VisualizationMarkersCfg(
+        prim_path=prim_path,
+        markers={
+            "arrow": sim_utils.UsdFileCfg(
+                usd_path=f"{ISAAC_NUCLEUS_DIR}/Props/UIElements/arrow_x.usd",
+                scale=(1.0, 1.0, 1.0),
+                visual_material=sim_utils.PreviewSurfaceCfg(diffuse_color=color),
+            ),
+        },
+    )
 
 
 class MotionCommand(CommandTerm):
@@ -1218,18 +1251,24 @@ class MotionCommandCfg(CommandTermCfg):
     target_pos_range: dict[str, tuple[float, float]] = {'x': (-3.0, 3.0),'y':(5.0,5.0), 'z': (0.0, 2.0)}
     body_visualizer_cfg: VisualizationMarkersCfg = FRAME_MARKER_CFG.replace(prim_path="/Visuals/Command/pose")
     body_visualizer_cfg.markers["frame"].scale = (0.1, 0.1, 0.1)
-    shot_visualizer_cfg: VisualizationMarkersCfg = SPHERE_MARKER_CFG.replace(prim_path="/Visuals/Command/shot")
-    shot_visualizer_cfg.markers["sphere"].scale = (0.15, 0.15, 0.15)
-    shot_visualizer_cfg.markers["sphere"].color = (1.0, 0.0, 0.0, 1.0)
-    goal_visualizer_cfg: VisualizationMarkersCfg = SPHERE_MARKER_CFG.replace(prim_path="/Visuals/Command/target")
-    goal_visualizer_cfg.markers["sphere"].scale = (0.5, 0.5, 0.5)
-    goal_visualizer_cfg.markers["sphere"].color = (0.68, 0.85, 0.9, 0.8)
-    estimate_visualizer_cfg: VisualizationMarkersCfg = SPHERE_MARKER_CFG.replace(prim_path="/Visuals/Command/estimate/anchor")
-    estimate_visualizer_cfg.markers["sphere"].scale = (0.6, 0.6, 0.6)
-    estimate_visualizer_cfg.markers["sphere"].color = (0.2, 0.5, 1.0, 0.5)
-    ball_hit_arrow_cfg: VisualizationMarkersCfg = RED_ARROW_X_MARKER_CFG.replace(prim_path="/Visuals/Command/estimate/ball_hit_arrow")
-    ball_hit_arrow_cfg.markers["arrow"].scale = (1.0, 1.0, 1.0)
-    ball_hit_arrow_cfg.markers["arrow"].visual_material = sim_utils.PreviewSurfaceCfg(diffuse_color=(1.0, 0.4, 0.8))
+    shot_visualizer_cfg: VisualizationMarkersCfg = _cuboid_marker_cfg(
+        prim_path="/Visuals/Command/shot",
+        size=(0.15, 0.15, 0.15),
+        color=(1.0, 0.0, 0.0, 1.0),
+    )
+    goal_visualizer_cfg: VisualizationMarkersCfg = _cuboid_marker_cfg(
+        prim_path="/Visuals/Command/target",
+        size=(0.5, 0.5, 0.5),
+        color=(0.68, 0.85, 0.9, 0.8),
+    )
+    estimate_visualizer_cfg: VisualizationMarkersCfg = _cuboid_marker_cfg(
+        prim_path="/Visuals/Command/estimate/anchor",
+        size=(0.6, 0.6, 0.6),
+        color=(0.2, 0.5, 1.0, 0.5),
+    )
+    ball_hit_arrow_cfg: VisualizationMarkersCfg = _arrow_x_marker_cfg(
+        prim_path="/Visuals/Command/estimate/ball_hit_arrow",
+    )
     contacted_flag: torch.Tensor = None
     overline_flag: torch.Tensor = None
     main_foot_name: str = "right_ankle_roll_link"

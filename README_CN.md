@@ -46,27 +46,38 @@ RoboNaldo 在 Isaac Lab 中训练 Unitree G1 足球射门策略。
 
 | 依赖 | 版本 |
 | --- | --- |
-| Isaac Sim | 4.5.0 |
-| Isaac Lab | 2.1.0 |
-| Python | 3.10 |
+| Isaac Sim | 5.1.0 |
+| Isaac Lab | 2.3.2 |
+| Python | 3.11 |
 
-### 2. 安装 BeyondMimic
+### 2. 安装训练 Extension
 
-请在同一个 Isaac Lab Python 环境中安装上游
-[BeyondMimic repository](https://github.com/HybridRobotics/whole_body_tracking)
-以及 RoboNaldo extension：
+请先激活一个干净的 Isaac Lab Python 环境，然后安装本仓库训练 extension：
 
 ```bash
-git clone https://github.com/HybridRobotics/whole_body_tracking.git
-cd whole_body_tracking
-python -m pip install -e source/whole_body_tracking
-cd ..
 python -m pip install -e source/whole_body_tracking
 ```
 
+本仓库已经包含 RoboNaldo 需要的修改版 BeyondMimic-style Isaac Lab extension，
+不需要额外 clone 或安装上游 BeyondMimic 仓库。Python package 名为
+`whole_body_tracking`；如果当前环境里之前安装过另一个同名 editable extension，
+请重新执行上面的安装命令，并用下面的命令检查当前 import 到底指向哪里：
+
+```bash
+python - <<'PY'
+import importlib.util
+
+spec = importlib.util.find_spec("whole_body_tracking")
+print(spec.origin)
+PY
+```
+
+输出路径应该指向本仓库，例如：
+`.../RoboNaldo/source/whole_body_tracking/whole_body_tracking/__init__.py`。
+
 ### 3. 下载机器人资产
 
-Unitree G1 描述文件不随本仓库提交。创建环境前，请从 BeyondMimic 使用的同一资产来源下载：
+Unitree G1 描述文件不随本仓库提交。运行环境前，请下载机器人资产：
 
 ```bash
 mkdir -p source/whole_body_tracking/whole_body_tracking/assets
