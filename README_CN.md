@@ -94,25 +94,15 @@ test -f source/whole_body_tracking/whole_body_tracking/assets/unitree_descriptio
 
 ### 4. 准备动作和 checkpoint
 
-训练需要一个 RoboNaldo NPZ 格式的重定向踢球动作。本仓库包含由 GVHMR+GMR 重定向得到的开源右脚踢球参考 CSV：
+训练需要一个 RoboNaldo NPZ 格式的重定向踢球动作。本仓库已经包含默认右脚推射动作：
 
 ```text
-motions/right_kick_reference.csv
+motions/right_kick.npz
 ```
 
-当然，你也可以替换成自己的动作。
+这个 NPZ 可以直接用于训练，不需要再从 CSV 重新生成。如果要替换成自己的动作，请用另一个 RoboNaldo-format NPZ 覆盖 `motions/right_kick.npz`。
 
-将仓库中的参考 CSV 转换为 NPZ：
-
-```bash
-python scripts/csv_to_npz.py \
-  --input_file motions/right_kick_reference.csv \
-  --input_fps 50 \
-  --output_name right_kick \
-  --headless
-```
-
-可选：将转换后的 NPZ 上传到 W&B registry：
+可选：将标准化后的 NPZ 上传到 W&B registry：
 
 ```bash
 python scripts/upload_npz.py \

@@ -105,25 +105,17 @@ should not be committed. The soccer ball is created with Isaac Lab native
 ### 4. Prepare Motions and Checkpoints
 
 Training requires one retargeted kick motion in RoboNaldo NPZ format. This
-repository includes the open-source right-foot kick reference CSV retargeted by GVHMR+GMR:
+repository includes the default right-foot push-kick motion:
 
 ```text
-motions/right_kick_reference.csv
+motions/right_kick.npz
 ```
 
-Of course you can replace it with yours.
+The NPZ is ready for training and does not need to be regenerated from CSV. To
+replace the default motion, overwrite `motions/right_kick.npz` with another
+RoboNaldo-format NPZ.
 
-Convert the included reference CSV into NPZ:
-
-```bash
-python scripts/csv_to_npz.py \
-  --input_file motions/right_kick_reference.csv \
-  --input_fps 50 \
-  --output_name right_kick \
-  --headless
-```
-
-Optional: upload the converted NPZ to a W&B registry:
+Optional: upload the normalized NPZ to a W&B registry:
 
 ```bash
 python scripts/upload_npz.py \

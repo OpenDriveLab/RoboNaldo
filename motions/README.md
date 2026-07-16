@@ -1,8 +1,8 @@
-# Reference Motions
+# Reference Motion
 
-## `right_kick_reference.csv`
+## `right_kick.npz`
 
-Open-source right-foot kick reference motion used in RoboNaldo.
+Default right-foot push-kick reference motion used in RoboNaldo training.
 
 Source:
 
@@ -13,16 +13,19 @@ Format:
 
 - 612 frames
 - 50 Hz
-- 36 comma-separated columns per row
-- Columns: root position `(x, y, z)`, root quaternion `(x, y, z, w)`, then 29
-  Unitree G1 joint positions in the order used by `scripts/csv_to_npz.py`
+- `joint_pos` / `joint_vel`: `(612, 29)`
+- `body_pos_w`, `body_lin_vel_w`, `body_ang_vel_w`: `(612, 30, 3)`
+- `body_quat_w`: `(612, 30, 4)` in `wxyz`
 
-Convert to training NPZ:
+To replace it, overwrite `motions/right_kick.npz` with another
+RoboNaldo-format NPZ. Optional upload:
 
 ```bash
-python scripts/csv_to_npz.py \
-  --input_file motions/right_kick_reference.csv \
-  --input_fps 50 \
-  --output_name right_kick \
-  --headless
+python scripts/upload_npz.py \
+  --artifact_path motions/right_kick.npz \
+  --entity <entity> \
+  --name right_kick
 ```
+
+The legacy `right_kick_reference.csv` is kept only as source/reference data for
+custom conversion experiments.

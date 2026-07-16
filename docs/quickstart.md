@@ -48,24 +48,16 @@ ignored by git.
 
 ## Motion Data
 
-The repository includes the open-source right-foot kick reference motion:
+The repository includes the default right-foot push-kick motion in the training
+NPZ format:
 
 ```text
-motions/right_kick_reference.csv
+motions/right_kick.npz
 ```
 
-It has 612 frames at 50 Hz. Convert it to the NPZ format used by the training
-environment:
-
-```bash
-python scripts/csv_to_npz.py \
-  --input_file motions/right_kick_reference.csv \
-  --input_fps 50 \
-  --output_name right_kick \
-  --headless
-```
-
-This creates `motions/right_kick.npz` by default.
+It has 612 frames at 50 Hz and is ready to pass to `--motion_file`. To replace
+the default motion, overwrite `motions/right_kick.npz` with another
+RoboNaldo-format NPZ.
 
 Optional: upload to a W&B registry:
 
@@ -179,6 +171,5 @@ python scripts/rsl_rl/train.py \
 ```
 
 `--wandb_path` resolves the checkpoint and archived task parameters. The
-`--motion_file` argument provides the local reference motion generated from the
-open-source CSV. Use `--registry_name` instead when the motion lives in a WandB
-artifact registry.
+`--motion_file` argument provides the local right-foot push-kick NPZ. Use
+`--registry_name` instead when the motion lives in a WandB artifact registry.

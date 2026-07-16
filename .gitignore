@@ -48,6 +48,7 @@ _build
 *.npz
 !motions/
 !motions/right_kick_reference.csv
+!motions/right_kick.npz
 
 **/assets/
 !/assets/
