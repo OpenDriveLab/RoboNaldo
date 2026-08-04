@@ -20,11 +20,28 @@
   <img src="assets/teaser-crop.png" alt="RoboNaldo teaser" width="100%">
 </p>
 
-RoboNaldo trains Unitree G1 soccer-shooting policies in Isaac Lab.
+RoboNaldo trains Unitree G1 soccer-shooting policies in Isaac Lab. This
+repository contains the simulation training stack, staged curriculum presets,
+and reference motion used to learn the free-kick policy.
 
-This repository contains the simulation training code. For real-world hardware
-deployment, export the trained policy to ONNX and use it with
-[Deploy Repo](https://github.com/OpenDriveLab/RoboNaldo_Deploy/tree/f60f24459aaabc3aea9187a2b13f8923049b629c).
+For real-world hardware deployment, export the trained policy to ONNX and run it
+with the companion
+[RoboNaldo Deploy](https://github.com/OpenDriveLab/RoboNaldo_Deploy/tree/f60f24459aaabc3aea9187a2b13f8923049b629c)
+repository. The demos below show the same free-kick policy in simulation and on
+a real Unitree G1.
+
+<table align="center" width="100%">
+  <tr>
+    <td width="50%" align="center"><b>Simulation</b></td>
+    <td width="50%" align="center"><b>Real robot</b></td>
+  </tr>
+  <tr>
+    <td width="50%"><video src="https://github.com/user-attachments/assets/f1365c83-3764-43b7-9ecf-57ba89854cf1" controls muted width="100%"></video></td>
+    <td width="50%"><video src="https://github.com/user-attachments/assets/45fbf473-060e-49b1-9204-c43bbcc89a3c" controls muted width="100%"></video></td>
+  </tr>
+</table>
+
+<p align="center"><em>Free-kick demo: RoboNaldo policy trained in Isaac Lab and deployed on Unitree G1.</em></p>
 
 ## Repository Overview
 

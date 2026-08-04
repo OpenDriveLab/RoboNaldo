@@ -20,10 +20,24 @@
   <img src="assets/teaser-crop.png" alt="RoboNaldo teaser" width="100%">
 </p>
 
-RoboNaldo 在 Isaac Lab 中训练 Unitree G1 足球射门策略。
+RoboNaldo 在 Isaac Lab 中训练 Unitree G1 足球射门策略。本仓库包含仿真训练代码、分阶段课程 preset，以及用于学习任意球策略的参考动作。
 
-本仓库包含仿真训练代码。真实机器人硬件部署时，请先将训练好的策略导出为 ONNX，再配合
-[Deploy Repo](https://github.com/OpenDriveLab/RoboNaldo_Deploy/tree/f60f24459aaabc3aea9187a2b13f8923049b629c) 使用。
+真实机器人硬件部署时，请先将训练好的策略导出为 ONNX，再配合
+[RoboNaldo Deploy](https://github.com/OpenDriveLab/RoboNaldo_Deploy/tree/f60f24459aaabc3aea9187a2b13f8923049b629c)
+仓库使用。下面的视频展示了同一个任意球策略在仿真和真实 Unitree G1 上的效果。
+
+<table align="center" width="100%">
+  <tr>
+    <td width="50%" align="center"><b>仿真 Simulation</b></td>
+    <td width="50%" align="center"><b>真机 Real robot</b></td>
+  </tr>
+  <tr>
+    <td width="50%"><video src="https://github.com/user-attachments/assets/f1365c83-3764-43b7-9ecf-57ba89854cf1" controls muted width="100%"></video></td>
+    <td width="50%"><video src="https://github.com/user-attachments/assets/45fbf473-060e-49b1-9204-c43bbcc89a3c" controls muted width="100%"></video></td>
+  </tr>
+</table>
+
+<p align="center"><em>任意球 demo：RoboNaldo 策略在 Isaac Lab 中训练，并部署到 Unitree G1 上。</em></p>
 
 ## 仓库结构
 
