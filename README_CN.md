@@ -199,28 +199,6 @@ python scripts/rsl_rl/train.py \
   --run_name stage3_multimode_shooting
 ```
 
-该任务使用上文固定的 Isaac Sim 5.1.0、Isaac Lab 2.3.2 和 RSL-RL 3.1.2 环境。上游库按固定版本安装即可，不需要修改其源码。
-
-### Nominal loco-shoot Stage 3 播放
-
-Nominal Stage 3 策略开始时处于 locomotion mode，用于接近并预测来球。触发
-planner 后切换到动作跟踪射门阶段，随后回到 locomotion mode 进行射后稳定，
-再开始下一轮来球。当前 mode 会作为 policy observation 输入；planner preset
-中的 `planner_tracking_end_frame: 300` 和 `planner_ball_respawn_frame: 400`
-控制跟踪与重生时序。
-
-使用训练时相同的 task、preset 和 motion file 播放训练好的 checkpoint：
-
-```bash
-python scripts/rsl_rl/play.py \
-  --task MultiMode-Planner-Shooting-Flat-G1-v0 \
-  --wandb_path <stage3_checkpoint_path> \
-  --yaml multi_mode/stage3_planner_shooting.yaml \
-  --motion_file motions/right_kick.npz \
-  --num_envs 1 \
-  --headless
-```
-
 Nominal Stage 3 仿真播放：
 
 <p align="center"><video src="https://github.com/user-attachments/assets/6b8f6248-f6df-4290-9de0-5f182381b494" controls muted width="80%"></video></p>

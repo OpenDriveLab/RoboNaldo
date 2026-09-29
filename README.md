@@ -221,32 +221,6 @@ python scripts/rsl_rl/train.py \
   --run_name stage3_multimode_shooting
 ```
 
-This task uses the same Isaac Sim 5.1.0, Isaac Lab 2.3.2, and RSL-RL 3.1.2
-environment listed above. The upstream libraries are used as installed; no
-repository-local changes to their source are required.
-
-### Nominal loco-shoot Stage 3 playback
-
-The nominal Stage 3 policy begins in locomotion mode while it approaches and
-predicts the incoming ball. When the planner trigger fires, it switches to the
-motion-tracking kick phase, then returns to locomotion for post-kick
-stabilization before the next ball cycle. The active mode is included in the
-policy observation, and the planner preset sets the tracking and respawn timing
-(`planner_tracking_end_frame: 300`, `planner_ball_respawn_frame: 400`).
-
-Play a trained nominal loco-shoot checkpoint with the same task, preset, and
-motion file used for training:
-
-```bash
-python scripts/rsl_rl/play.py \
-  --task MultiMode-Planner-Shooting-Flat-G1-v0 \
-  --wandb_path <stage3_checkpoint_path> \
-  --yaml multi_mode/stage3_planner_shooting.yaml \
-  --motion_file motions/right_kick.npz \
-  --num_envs 1 \
-  --headless
-```
-
 Nominal Stage 3 simulation playback:
 
 <p align="center"><video src="https://github.com/user-attachments/assets/6b8f6248-f6df-4290-9de0-5f182381b494" controls muted width="80%"></video></p>
