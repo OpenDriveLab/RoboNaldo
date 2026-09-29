@@ -199,7 +199,7 @@ python scripts/rsl_rl/train.py \
   --run_name stage3_multimode_shooting
 ```
 
-Nominal Stage 3 仿真播放：
+Nominal Stage 3 演示：
 
 <p align="center"><video src="https://github.com/user-attachments/assets/6b8f6248-f6df-4290-9de0-5f182381b494" controls muted width="80%"></video></p>
 
