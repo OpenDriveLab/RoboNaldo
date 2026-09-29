@@ -62,6 +62,7 @@ RoboNaldo 在 Isaac Lab 中训练 Unitree G1 足球射门策略。本仓库包�
 | --- | --- |
 | Isaac Sim | 5.1.0 |
 | Isaac Lab | 2.3.2 |
+| RSL-RL | 3.1.2 |
 | Python | 3.11 |
 
 ### 2. 安装训练 Extension
@@ -71,6 +72,18 @@ RoboNaldo 在 Isaac Lab 中训练 Unitree G1 足球射门策略。本仓库包�
 ```bash
 python -m pip install -e source/whole_body_tracking
 ```
+
+Isaac Lab 2.3.2 需要 RSL-RL 3.x 配置接口。请在 Isaac Lab 环境中安装本版本使用的固定版本：
+
+```bash
+python -m pip install "rsl-rl-lib==3.1.2"
+```
+
+请先激活 Isaac Lab Python 环境后再执行该命令。如果环境由独立的 Isaac
+Lab checkout 管理，也可以使用等价命令：
+`<isaaclab-root>/isaaclab.sh -p -m pip install "rsl-rl-lib==3.1.2"`。
+
+训练、播放和评估脚本均针对上述固定版本组合编写，请不要修改 Isaac Lab 或 RSL-RL 源码。
 
 本仓库已经包含 RoboNaldo 需要的修改版 BeyondMimic-style Isaac Lab extension，
 不需要额外 clone 或安装上游 BeyondMimic 仓库。Python package 名为
@@ -170,6 +183,47 @@ python scripts/rsl_rl/train.py \
 > 当前 release 提供右脚 preset 和右脚参考动作。左脚课程应使用镜像后的动作数据，并将 `main_foot_name` 改为 `left_ankle_roll_link`。
 
 论文风格的 body-frame observation 设置请使用 `Tracking-Body-Frame-Flat-G1-v0` registry；external-mocap 风格的 global observation 设置请使用 `Tracking-Flat-G1-v0`。
+
+### Multi-mode Stage 3 射门
+
+仓库还提供开发分支中的 multi-mode Stage 3 射门方案。它在同一个策略中结合动作跟踪和 locomotion command，并使用 planner 专用的动态来球 preset：
+
+```bash
+python scripts/rsl_rl/train.py \
+  --task MultiMode-Planner-Shooting-Flat-G1-v0 \
+  --motion_file motions/right_kick.npz \
+  --yaml multi_mode/stage3_planner_shooting.yaml \
+  --headless \
+  --logger wandb \
+  --log_project_name kick \
+  --run_name stage3_multimode_shooting
+```
+
+该任务使用上文固定的 Isaac Sim 5.1.0、Isaac Lab 2.3.2 和 RSL-RL 3.1.2 环境。上游库按固定版本安装即可，不需要修改其源码。
+
+### Nominal loco-shoot Stage 3 播放
+
+Nominal Stage 3 策略开始时处于 locomotion mode，用于接近并预测来球。触发
+planner 后切换到动作跟踪射门阶段，随后回到 locomotion mode 进行射后稳定，
+再开始下一轮来球。当前 mode 会作为 policy observation 输入；planner preset
+中的 `planner_tracking_end_frame: 300` 和 `planner_ball_respawn_frame: 400`
+控制跟踪与重生时序。
+
+使用训练时相同的 task、preset 和 motion file 播放训练好的 checkpoint：
+
+```bash
+python scripts/rsl_rl/play.py \
+  --task MultiMode-Planner-Shooting-Flat-G1-v0 \
+  --wandb_path <stage3_checkpoint_path> \
+  --yaml multi_mode/stage3_planner_shooting.yaml \
+  --motion_file motions/right_kick.npz \
+  --num_envs 1 \
+  --headless
+```
+
+Nominal Stage 3 仿真播放：
+
+<p align="center"><video src="https://github.com/user-attachments/assets/6b8f6248-f6df-4290-9de0-5f182381b494" controls muted width="80%"></video></p>
 
 ## 播放和评估
 

@@ -67,6 +67,7 @@ Recommended baseline:
 | --- | --- |
 | Isaac Sim | 5.1.0 |
 | Isaac Lab | 2.3.2 |
+| RSL-RL | 3.1.2 |
 | Python | 3.11 |
 
 ### 2. Install the Training Extension
@@ -77,6 +78,20 @@ training extension:
 ```bash
 python -m pip install -e source/whole_body_tracking
 ```
+
+Isaac Lab 2.3.2 requires the RSL-RL 3.x configuration API. Install the version
+used by this release in the Isaac Lab environment before running the scripts:
+
+```bash
+python -m pip install "rsl-rl-lib==3.1.2"
+```
+
+Run this command after activating the Isaac Lab Python environment. If the
+environment is managed by an Isaac Lab checkout, the equivalent command is
+`<isaaclab-root>/isaaclab.sh -p -m pip install "rsl-rl-lib==3.1.2"`.
+
+The training, playback, and evaluation scripts target this pinned combination
+of Isaac Lab and RSL-RL. Do not apply local changes to Isaac Lab or RSL-RL.
 
 This repository already contains the modified BeyondMimic-style Isaac Lab
 extension needed for RoboNaldo, so you do not need to clone or install the
@@ -188,6 +203,53 @@ python scripts/rsl_rl/train.py \
 
 Use `Tracking-Body-Frame-Flat-G1-v0` registry for the paper-style body-frame observation
 setup and `Tracking-Flat-G1-v0` for external-mocap-style global observation setup.
+
+### Multi-mode Stage 3 shooting
+
+The repository also includes the multi-mode stage-3 shooting solution from the
+development branch. It combines motion tracking and locomotion commands in one
+policy and uses the planner-specific incoming-ball preset:
+
+```bash
+python scripts/rsl_rl/train.py \
+  --task MultiMode-Planner-Shooting-Flat-G1-v0 \
+  --motion_file motions/right_kick.npz \
+  --yaml multi_mode/stage3_planner_shooting.yaml \
+  --headless \
+  --logger wandb \
+  --log_project_name kick \
+  --run_name stage3_multimode_shooting
+```
+
+This task uses the same Isaac Sim 5.1.0, Isaac Lab 2.3.2, and RSL-RL 3.1.2
+environment listed above. The upstream libraries are used as installed; no
+repository-local changes to their source are required.
+
+### Nominal loco-shoot Stage 3 playback
+
+The nominal Stage 3 policy begins in locomotion mode while it approaches and
+predicts the incoming ball. When the planner trigger fires, it switches to the
+motion-tracking kick phase, then returns to locomotion for post-kick
+stabilization before the next ball cycle. The active mode is included in the
+policy observation, and the planner preset sets the tracking and respawn timing
+(`planner_tracking_end_frame: 300`, `planner_ball_respawn_frame: 400`).
+
+Play a trained nominal loco-shoot checkpoint with the same task, preset, and
+motion file used for training:
+
+```bash
+python scripts/rsl_rl/play.py \
+  --task MultiMode-Planner-Shooting-Flat-G1-v0 \
+  --wandb_path <stage3_checkpoint_path> \
+  --yaml multi_mode/stage3_planner_shooting.yaml \
+  --motion_file motions/right_kick.npz \
+  --num_envs 1 \
+  --headless
+```
+
+Nominal Stage 3 simulation playback:
+
+<p align="center"><video src="https://github.com/user-attachments/assets/6b8f6248-f6df-4290-9de0-5f182381b494" controls muted width="80%"></video></p>
 
 ## Play and Evaluation
 
