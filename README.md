@@ -2,6 +2,8 @@
 
 # RoboNaldo
 
+<span style="color: red;">CoRL 2026 Oral</span>
+
 **Accurate, stable, and powerful humanoid soccer shooting via motion-guided curriculum reinforcement learning.**
 
 <p>
